@@ -6,6 +6,8 @@
   language_version: 1.27.2
   additional_dependencies: [github.com/zricethezav/gitleaks/v8@v8.30.1]
   pass_filenames: false
+  # gitleaks reads the staged diff itself; consumer excludes must not skip it.
+  always_run: true
 - id: shellcheck
   name: shellcheck
   description: Lint shell scripts (https://www.shellcheck.net)
