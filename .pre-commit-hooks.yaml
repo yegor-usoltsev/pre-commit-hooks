@@ -29,7 +29,7 @@
   description: Lint Dockerfiles (https://github.com/hadolint/hadolint)
   entry: hadolint --failure-threshold=error
   language: python
-  additional_dependencies: [hadolint-py==2.15.1.2]
+  additional_dependencies: [hadolint-py==2.14.0.1]
   types: [dockerfile]
 - id: actionlint
   name: actionlint
