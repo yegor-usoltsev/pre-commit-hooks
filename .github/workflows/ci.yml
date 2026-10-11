@@ -1,0 +1,56 @@
+---
+name: CI
+
+on:
+  push:
+    branches: [ "**" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: j178/prek-action@v3.0.1
+      - run: prek validate-manifest .pre-commit-hooks.yaml
+      - name: Run every hook with prek and pre-commit
+        run: |
+          fixture=$(mktemp -d)
+          cp -R tests/fixture/. "$fixture"
+          git -C "$fixture" init -q
+          git -C "$fixture" add -A
+          cd "$fixture"
+          prek try-repo "$GITHUB_WORKSPACE" --rev "$GITHUB_SHA" --all-files
+          pipx run pre-commit try-repo "$GITHUB_WORKSPACE" --ref "$GITHUB_SHA" --all-files
+      - name: Run the hooks that apply to this repository
+        run: |
+          prek run --all-files
+          prek try-repo . --rev "$GITHUB_SHA" --all-files actionlint zizmor check-renovate
+
+  release:
+    if: github.ref == 'refs/heads/main'
+    needs: test
+    runs-on: ubuntu-latest
+    concurrency: release
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Tag the next patch version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git fetch --tags --force
+          if git describe --exact-match --tags --match 'v*' "$GITHUB_SHA" >/dev/null 2>&1; then exit 0; fi
+          last=$(git tag --list 'v*' --sort=-v:refname | head -n1)
+          # A newer commit may have been released first; never tag an older one above it.
+          if [ -n "$last" ] && git merge-base --is-ancestor "$GITHUB_SHA" "$last"; then exit 0; fi
+          IFS=. read -r major minor patch <<<"${last#v}"
+          next="v${major:-1}.${minor:-0}.$(( ${patch:--1} + 1 ))"
+          gh api "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/$next" -f sha="$GITHUB_SHA"

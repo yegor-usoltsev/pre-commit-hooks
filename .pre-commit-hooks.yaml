@@ -1,0 +1,59 @@
+- id: gitleaks
+  name: gitleaks
+  description: Detect secrets in staged changes (https://github.com/gitleaks/gitleaks)
+  entry: gitleaks git --pre-commit --redact --staged --verbose
+  language: golang
+  additional_dependencies: [github.com/zricethezav/gitleaks/v8@v8.30.1]
+  pass_filenames: false
+- id: shellcheck
+  name: shellcheck
+  description: Lint shell scripts (https://www.shellcheck.net)
+  entry: shellcheck
+  language: python
+  additional_dependencies: [shellcheck-py==0.11.0.1]
+  types: [shell]
+- id: shfmt
+  name: shfmt
+  description: Format shell scripts (https://github.com/mvdan/sh)
+  entry: shfmt --write
+  language: golang
+  additional_dependencies: [mvdan.cc/sh/v3/cmd/shfmt@v3.14.1]
+  types: [shell]
+  exclude_types: [csh, tcsh, zsh]
+- id: hadolint
+  name: hadolint
+  description: Lint Dockerfiles (https://github.com/hadolint/hadolint)
+  entry: hadolint --failure-threshold=error
+  language: python
+  additional_dependencies: [hadolint-py==2.15.1.2]
+  types: [dockerfile]
+- id: actionlint
+  name: actionlint
+  description: Lint GitHub Actions workflows (https://github.com/rhysd/actionlint)
+  entry: actionlint
+  language: golang
+  additional_dependencies: [github.com/rhysd/actionlint/cmd/actionlint@v1.7.12]
+  files: ^\.github/workflows/.*\.ya?ml$
+- id: zizmor
+  name: zizmor
+  description: Audit GitHub Actions security (https://docs.zizmor.sh)
+  entry: zizmor --offline
+  language: python
+  additional_dependencies: [zizmor==1.30.1]
+  files: ^\.github/(workflows/.*\.ya?ml|actions/.*/action\.ya?ml)$
+- id: check-renovate
+  name: check-renovate
+  description: Validate Renovate config against its schema (https://github.com/python-jsonschema/check-jsonschema)
+  entry: check-jsonschema --builtin-schema vendor.renovate
+  language: python
+  additional_dependencies: [check-jsonschema==0.38.2]
+  files: (^|/)(\.github/)?renovate\.json5?$
+- id: golangci-lint
+  name: golangci-lint
+  description: Lint and format Go code (https://golangci-lint.run)
+  entry: golangci-lint run --fix
+  language: golang
+  additional_dependencies: [github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.14.0]
+  files: \.go$|(^|/)go\.(mod|sum)$|(^|/)\.golangci\.(ya?ml|toml|json)$
+  pass_filenames: false
+  require_serial: true

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "group:all",
+    ":automergeAll",
+    ":enablePreCommit",
+    ":reviewer(yegor-usoltsev)"
+  ],
+  "schedule": [
+    "on the 10th day of the month"
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update Python tools pinned in the hook manifest",
+      "managerFilePatterns": [
+        "/(^|/)\\.pre-commit-hooks\\.yaml$/"
+      ],
+      "matchStrings": [
+        "additional_dependencies: \\[(?<depName>[A-Za-z0-9_.-]+)==(?<currentValue>[^\\],\\s]+)\\]"
+      ],
+      "datasourceTemplate": "pypi"
+    },
+    {
+      "customType": "regex",
+      "description": "Update Go tools pinned in the hook manifest",
+      "managerFilePatterns": [
+        "/(^|/)\\.pre-commit-hooks\\.yaml$/"
+      ],
+      "matchStrings": [
+        "additional_dependencies: \\[(?<depName>[a-z0-9.-]+\\.[a-z]+/[^@\\]]+?)(?:/cmd/[^@\\]]+)?@(?<currentValue>v[^\\],\\s]+)\\]"
+      ],
+      "datasourceTemplate": "go"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "A new Go major version changes the module path, which the regex cannot rewrite",
+      "matchDatasources": [
+        "go"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": false
+    }
+  ]
+}

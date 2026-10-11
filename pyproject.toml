@@ -1,0 +1,12 @@
+# Lets pre-commit and prek install this repository for the python hooks;
+# the tools themselves come from each hook's additional_dependencies.
+[project]
+name = "pre-commit-hooks"
+version = "0"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = []
