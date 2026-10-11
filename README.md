@@ -42,7 +42,7 @@ The exact tool versions are in [`.pre-commit-hooks.yaml`](.pre-commit-hooks.yaml
    prek run --all-files
    ```
 
-The `golang` hooks need Go; prek downloads it when it is missing, pre-commit uses the one on `PATH`. The `python` hooks install prebuilt wheels.
+The `golang` hooks build with the Go version pinned in their `language_version`, which prek and pre-commit download when the local Go differs. The `python` hooks install prebuilt wheels.
 
 Override `args`, `files` or `exclude` per hook in your config like for any other hook. zizmor reads `.github/zizmor.yml`; to allow version tags such as `actions/checkout@v7` instead of commit hashes, add:
 

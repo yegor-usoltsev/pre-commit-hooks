@@ -32,6 +32,18 @@
         "additional_dependencies: \\[(?<depName>[a-z0-9.-]+\\.[a-z]+/[^@\\]]+?)(?:/cmd/[^@\\]]+)?@(?<currentValue>v[^\\],\\s]+)\\]"
       ],
       "datasourceTemplate": "go"
+    },
+    {
+      "customType": "regex",
+      "description": "Update the Go toolchain of the golang hooks",
+      "managerFilePatterns": [
+        "/(^|/)\\.pre-commit-hooks\\.yaml$/"
+      ],
+      "matchStrings": [
+        "language_version: (?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
+      "datasourceTemplate": "golang-version",
+      "depNameTemplate": "go"
     }
   ],
   "packageRules": [
