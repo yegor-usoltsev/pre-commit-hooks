@@ -4,6 +4,8 @@
 
 A new hook needs a fixture in `tests/fixture/` that exercises it, a row in the README table, and a passing run of the CI steps: `prek validate-manifest .pre-commit-hooks.yaml`, then `prek try-repo` and `pre-commit try-repo --ref` against a Git repository made from `tests/fixture/` (see `.github/workflows/ci.yml`).
 
+The fixture's Go patch version intentionally exceeds the golangci-lint hook's `language_version` to exercise automatic toolchain selection. Preserve that regression case when updating the Go toolchain.
+
 Consumers pin a tag, and prek and pre-commit cache a repository per tag, so never move or delete a tag. CI tags every commit on `main` with the next patch version. Renovate skips Go major updates because the new module path (`/v2` → `/v3`) needs a manual edit.
 
 Hook IDs are a public contract: renaming or removing one breaks consumer configs, so add a new ID instead.
