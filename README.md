@@ -44,6 +44,8 @@ The exact tool versions are in [`.pre-commit-hooks.yaml`](.pre-commit-hooks.yaml
 
 The `golang` hooks build with the Go version pinned in their `language_version`, which prek and pre-commit download when the local Go differs. The `python` hooks install prebuilt wheels.
 
+The `golangci-lint` hook automatically selects the Go patch version required by the module. A newer Go language version still requires a compatible golangci-lint version.
+
 Override `args`, `files` or `exclude` per hook in your config like for any other hook. zizmor reads `.github/zizmor.yml`; to allow version tags such as `actions/checkout@v7` instead of commit hashes, add:
 
 ```yaml

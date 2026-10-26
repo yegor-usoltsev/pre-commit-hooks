@@ -10,6 +10,6 @@ The golangci-lint hook pins Go 1.27.2 through `language_version`. prek runs that
 - Four other consumers pin v1.0.2 without an override: `renovate-bot/renovate-triggerer`, `yegor-usoltsev/drone-email-webhook`, `yegor-usoltsev/drone-trigger-build`, and `yegor-usoltsev/go-serve-s3`. They currently require Go 1.27.2. Each fails when its prepared hook environment loads an isolated module requiring Go 1.27.3; the same check passes with `GOTOOLCHAIN=auto`.
 - golangci-lint v2.14.0 permits newer Go patch versions in the same language version; a newer minor Go version still requires a compatible linter binary.
 
-## Open decision
+## Resolution
 
-Choose a shared hook fix, preferably enabling automatic toolchain selection in its entry while keeping the pinned compiler for installation. Verify both prek and pre-commit fixture workflows, publish a new immutable hook tag through the existing CI, update consumers, then remove the temporary consumer override. Publishing and consumer changes are outside this audit.
+The shared golangci-lint entry enables `GOTOOLCHAIN=auto` while keeping the pinned compiler for installation. The fixture now requires Go 1.27.3, newer than the hook's Go 1.27.2, so both prek and pre-commit exercise automatic toolchain selection. Consumers can update the hook tag and remove their temporary entry overrides.

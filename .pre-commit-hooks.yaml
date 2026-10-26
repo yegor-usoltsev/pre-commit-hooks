@@ -56,7 +56,8 @@
 - id: golangci-lint
   name: golangci-lint
   description: Lint and format Go code (https://golangci-lint.run)
-  entry: golangci-lint run --fix
+  # Let modules select newer Go patch versions than the hook's build toolchain.
+  entry: env GOTOOLCHAIN=auto golangci-lint run --fix
   language: golang
   language_version: 1.27.2
   additional_dependencies: [github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.14.0]
